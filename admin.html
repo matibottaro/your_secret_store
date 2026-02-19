@@ -2,9 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin</title>
-<link rel="stylesheet" href="style.css">
+<title>Admin - Your Secret</title>
+<style>
+body{font-family:Poppins;background:#ffe6f0;padding:20px;}
+input,textarea,select{display:block;margin:5px 0;padding:5px;width:100%;}
+button{margin:5px 0;padding:8px;}
+.producto-admin{background:white;padding:15px;margin:10px 0;border-radius:10px;}
+</style>
 </head>
 <body>
 
@@ -19,8 +23,6 @@
 
 <input id="nombre" placeholder="Nombre">
 <input id="precio" type="number" placeholder="Precio">
-<textarea id="descripcion" placeholder="Descripción"></textarea>
-
 <select id="categoria">
 <option>Ropa Interior</option>
 <option>Pijamas</option>
@@ -29,9 +31,10 @@
 <option>Maquillaje</option>
 <option>MakeUp Kit</option>
 </select>
+<textarea id="descripcion" placeholder="Descripción"></textarea>
 
-<label>Destacado</label>
-<input type="checkbox" id="destacado">
+<label>Activo</label>
+<input type="checkbox" id="activo" checked>
 
 <button onclick="agregarProducto()">Agregar Producto</button>
 
@@ -41,7 +44,77 @@
 
 </div>
 
-<script src="script.js"></script>
+<script>
+
+let productos = JSON.parse(localStorage.getItem("productos")) || [];
+
+function guardar(){
+localStorage.setItem("productos",JSON.stringify(productos));
+}
+
+function login(){
+if(document.getElementById("password").value==="1234"){
+document.getElementById("panel").style.display="block";
+renderAdmin();
+}else{
+alert("Contraseña incorrecta");
+}
+}
+
+function agregarProducto(){
+let nuevo={
+id:Date.now(),
+nombre:document.getElementById("nombre").value,
+precio:Number(document.getElementById("precio").value),
+categoria:document.getElementById("categoria").value,
+descripcion:document.getElementById("descripcion").value,
+activo:document.getElementById("activo").checked,
+colores:[]
+};
+
+productos.push(nuevo);
+guardar();
+renderAdmin();
+}
+
+function renderAdmin(){
+let cont=document.getElementById("lista");
+cont.innerHTML="";
+
+productos.forEach(p=>{
+cont.innerHTML+=`
+<div class="producto-admin">
+<strong>${p.nombre}</strong> - $${p.precio}
+<button onclick="eliminarProducto(${p.id})">Eliminar</button>
+<button onclick="agregarColor(${p.id})">Agregar Color</button>
+</div>
+`;
+});
+}
+
+function eliminarProducto(id){
+productos=productos.filter(x=>x.id!==id);
+guardar();
+renderAdmin();
+}
+
+function agregarColor(id){
+let nombre=prompt("Nombre del color:");
+let imagen=prompt("Ruta imagen (ej: rosa.jpg):");
+
+let nuevoColor={
+nombre,
+imagen,
+stock:{S:0,M:0,L:0,XL:0}
+};
+
+let p=productos.find(x=>x.id===id);
+p.colores.push(nuevoColor);
+guardar();
+}
+
+</script>
+
 </body>
 </html>
 
