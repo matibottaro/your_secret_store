@@ -1,116 +1,169 @@
 let productos = JSON.parse(localStorage.getItem("productos")) || [];
 let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-let descuento = 0;
-let filtroActual="Todos";
 
-function guardar(){
-    localStorage.setItem("productos",JSON.stringify(productos));
-    localStorage.setItem("carrito",JSON.stringify(carrito));
-    localStorage.setItem("pedidos",JSON.stringify(pedidos));
+function guardarProductos(){
+    localStorage.setItem("productos", JSON.stringify(productos));
 }
 
-function render(){
-    const cont=document.getElementById("productos");
-    const dest=document.getElementById("destacados");
+function guardarCarrito(){
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
+function login(){
+    if(document.getElementById("password").value === "1234"){
+        document.getElementById("panel").style.display="block";
+        renderAdmin();
+    } else {
+        alert("Contraseña incorrecta");
+    }
+}
+
+function agregarProducto(){
+    let nuevo = {
+        id: Date.now(),
+        nombre: nombre.value,
+        precio: Number(precio.value),
+        descripcion: descripcion.value,
+        categoria: categoria.value,
+        destacado: destacado.checked,
+        activo: true,
+        colores: []
+    };
+    productos.push(nuevo);
+    guardarProductos();
+    renderAdmin();
+}
+
+function renderAdmin(){
+    let cont = document.getElementById("lista");
+    if(!cont) return;
     cont.innerHTML="";
-    dest.innerHTML="";
 
     productos.forEach(p=>{
-        if(!p.activo) return;
-
-        let html = crearProductoHTML(p);
-
-        if(p.destacado){
-            dest.innerHTML+=html;
-        }
-
-        if(filtroActual==="Todos" || p.categoria===filtroActual){
-            cont.innerHTML+=html;
-        }
+        cont.innerHTML+=`
+        <div class="card">
+        <strong>${p.nombre}</strong> - $${p.precio}<br>
+        <button onclick="agregarColor(${p.id})">Agregar Color</button>
+        <button onclick="eliminarProducto(${p.id})">Eliminar</button>
+        ${renderColores(p)}
+        </div>
+        `;
     });
-
-    actualizarCarrito();
 }
 
-function crearProductoHTML(p){
-    let html=`<div class="producto">
-    <h3>${p.nombre}</h3>
-    <p>${p.descripcion}</p>
-    <p>$${p.precio}</p>`;
+function eliminarProducto(id){
+    productos = productos.filter(p=>p.id!==id);
+    guardarProductos();
+    renderAdmin();
+}
 
+function agregarColor(id){
+    let nombreColor = prompt("Nombre del color:");
+    let imagen = prompt("Ruta imagen (ej: images/rosa.jpg)");
+
+    let nuevoColor = {
+        nombre:nombreColor,
+        imagen:imagen,
+        stock:{XS:0,S:0,M:0,L:0,XL:0}
+    };
+
+    let p=productos.find(x=>x.id===id);
+    p.colores.push(nuevoColor);
+    guardarProductos();
+    renderAdmin();
+}
+
+function renderColores(p){
+    let html="";
     p.colores.forEach(c=>{
-        let totalStock=Object.values(c.stock).reduce((a,b)=>a+b,0);
-        html+=`<p class="${totalStock===0?'agotado':''}">
-        ${totalStock===0?'(AGOTADO) ':''}${c.nombre}</p><div class="talles">`;
-
-        for(let t in c.stock){
-            html+=`<button ${c.stock[t]===0?'disabled':''}
-            onclick="agregar('${p.id}','${c.nombre}','${t}')">${t}</button>`;
-        }
-
-        html+="</div>";
+        html+=`
+        <div>
+        <strong>${c.nombre}</strong>
+        ${Object.keys(c.stock).map(t=>`
+        ${t}: <input type="number" value="${c.stock[t]}"
+        onchange="editarStock(${p.id},'${c.nombre}','${t}',this.value)">
+        `).join(" ")}
+        </div>
+        `;
     });
-
-    html+="</div>";
     return html;
 }
 
-function agregar(id,color,talle){
-    let p=productos.find(x=>x.id==id);
-    let c=p.colores.find(x=>x.nombre==color);
-    if(c.stock[talle]>0){
-        carrito.push({nombre:p.nombre,precio:p.precio,color,talle});
-        c.stock[talle]--;
-        guardar();
-        render();
-    }
+function editarStock(id,color,talle,valor){
+    let p=productos.find(x=>x.id===id);
+    let c=p.colores.find(x=>x.nombre===color);
+    c.stock[talle]=Number(valor);
+    guardarProductos();
 }
 
-function aplicarCupon(){
-    if(document.getElementById("cupon").value==="SECRET10"){
-        descuento=0.10;
-        alert("Descuento aplicado 10%");
-        actualizarCarrito();
-    }
+function renderProductos(){
+    let cont = document.getElementById("productos");
+    if(!cont) return;
+    cont.innerHTML="";
+
+    productos.filter(p=>p.activo).forEach(p=>{
+        cont.innerHTML+=`
+        <div class="card">
+        <h3>${p.nombre}</h3>
+        <p>${p.descripcion}</p>
+        <p>$${p.precio}</p>
+        ${p.colores.map(c=>{
+            let agotado = Object.values(c.stock).every(s=>s===0);
+            return `
+            <div>
+            <strong>${agotado?"(AGOTADO) ":""}${c.nombre}</strong><br>
+            ${Object.keys(c.stock).map(t=>`
+            <button ${c.stock[t]===0?"disabled":""}
+            onclick="agregarCarrito(${p.id},'${c.nombre}','${t}')">
+            ${t}
+            </button>
+            `).join("")}
+            </div>
+            `;
+        }).join("")}
+        </div>
+        `;
+    });
+
+    renderCarrito();
 }
 
-function actualizarCarrito(){
-    let cont=document.getElementById("carrito-items");
+function agregarCarrito(id,color,talle){
+    let p=productos.find(x=>x.id===id);
+    carrito.push({nombre:p.nombre,precio:p.precio,color,talle});
+    guardarCarrito();
+    renderCarrito();
+}
+
+function renderCarrito(){
+    let cont=document.getElementById("carrito");
+    if(!cont) return;
     cont.innerHTML="";
     let total=0;
 
-    carrito.forEach(p=>{
-        cont.innerHTML+=`<p>${p.nombre} - ${p.color} - ${p.talle} - $${p.precio}</p>`;
-        total+=p.precio;
+    carrito.forEach(c=>{
+        total+=c.precio;
+        cont.innerHTML+=`${c.nombre} - ${c.color} - ${c.talle} - $${c.precio}<br>`;
     });
 
-    total=total-(total*descuento);
     document.getElementById("total").innerText=total;
 }
 
 function finalizarCompra(){
     let total=0;
-    let mensaje="Hola! Pedido:%0A%0A";
+    let mensaje="Hola! Quiero confirmar mi pedido:%0A%0A";
 
-    carrito.forEach(p=>{
-        mensaje+=`• ${p.nombre} - ${p.color} - ${p.talle} - $${p.precio}%0A`;
-        total+=p.precio;
+    carrito.forEach(c=>{
+        mensaje+=`${c.nombre} - ${c.color} - ${c.talle} - $${c.precio}%0A`;
+        total+=c.precio;
     });
 
-    total=total-(total*descuento);
-    mensaje+=`%0ATotal: $${total}%0ATransferencia BROU.%0ACuenta: 00000000`;
+    mensaje+=`%0ATotal: $${total}%0A`;
+    mensaje+=`Voy a pagar por transferencia BROU.`;
 
-    pedidos.push({carrito,total,fecha:new Date()});
-    carrito=[];
-    guardar();
     window.open(`https://wa.me/59891699794?text=${mensaje}`);
-    render();
 }
 
-function filtrar(cat){
-    filtroActual=cat;
-    render();
-}
+renderProductos();
 
-render();
+
