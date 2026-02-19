@@ -3,33 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin - Your Secret</title>
+<title>Admin</title>
 <link rel="stylesheet" href="style.css">
-<style>
-.admin-container { padding:20px; }
-.producto-admin {
-    background:white;
-    padding:15px;
-    margin:10px 0;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-}
-input, textarea, select {
-    margin:5px 0;
-    padding:5px;
-    width:100%;
-}
-button { margin:5px 0; }
-.stock-grid {
-    display:grid;
-    grid-template-columns: repeat(5,1fr);
-    gap:5px;
-}
-</style>
 </head>
 <body>
-
-<div class="admin-container">
 
 <h2>Panel Administrador</h2>
 
@@ -42,6 +19,8 @@ button { margin:5px 0; }
 
 <input id="nombre" placeholder="Nombre">
 <input id="precio" type="number" placeholder="Precio">
+<textarea id="descripcion" placeholder="Descripción"></textarea>
+
 <select id="categoria">
 <option>Ropa Interior</option>
 <option>Pijamas</option>
@@ -50,145 +29,20 @@ button { margin:5px 0; }
 <option>Maquillaje</option>
 <option>MakeUp Kit</option>
 </select>
-<textarea id="descripcion" placeholder="Descripción"></textarea>
 
-<label>¿Destacado?</label>
+<label>Destacado</label>
 <input type="checkbox" id="destacado">
 
 <button onclick="agregarProducto()">Agregar Producto</button>
 
 <hr>
-
-<h3>Productos Existentes</h3>
+<h3>Productos</h3>
 <div id="lista"></div>
 
 </div>
-</div>
 
-<script>
-
-let productos = JSON.parse(localStorage.getItem("productos")) || [];
-
-function guardar(){
-    localStorage.setItem("productos",JSON.stringify(productos));
-}
-
-function login(){
-    if(document.getElementById("password").value === "1234"){
-        document.getElementById("panel").style.display="block";
-        renderAdmin();
-    } else {
-        alert("Contraseña incorrecta");
-    }
-}
-
-function agregarProducto(){
-    let nuevo = {
-        id: Date.now(),
-        nombre: document.getElementById("nombre").value,
-        precio: Number(document.getElementById("precio").value),
-        categoria: document.getElementById("categoria").value,
-        descripcion: document.getElementById("descripcion").value,
-        destacado: document.getElementById("destacado").checked,
-        activo: true,
-        colores: []
-    };
-
-    productos.push(nuevo);
-    guardar();
-    renderAdmin();
-    alert("Producto agregado");
-}
-
-function renderAdmin(){
-    let cont = document.getElementById("lista");
-    cont.innerHTML="";
-
-    productos.forEach(p=>{
-        cont.innerHTML+=`
-        <div class="producto-admin">
-        <strong>${p.nombre}</strong> - $${p.precio}<br>
-        Categoría: ${p.categoria}<br>
-        Activo: ${p.activo ? "Sí" : "No"} |
-        Destacado: ${p.destacado ? "Sí" : "No"}<br>
-
-        <button onclick="toggleActivo(${p.id})">Activar/Desactivar</button>
-        <button onclick="toggleDestacado(${p.id})">Destacar</button>
-        <button onclick="eliminarProducto(${p.id})">Eliminar</button>
-
-        <h4>Colores</h4>
-        ${renderColores(p)}
-
-        <button onclick="agregarColor(${p.id})">Agregar Color</button>
-        </div>
-        `;
-    });
-}
-
-function toggleActivo(id){
-    let p=productos.find(x=>x.id===id);
-    p.activo=!p.activo;
-    guardar();
-    renderAdmin();
-}
-
-function toggleDestacado(id){
-    let p=productos.find(x=>x.id===id);
-    p.destacado=!p.destacado;
-    guardar();
-    renderAdmin();
-}
-
-function eliminarProducto(id){
-    productos = productos.filter(x=>x.id!==id);
-    guardar();
-    renderAdmin();
-}
-
-function agregarColor(id){
-    let nombre = prompt("Nombre del color:");
-    let imagen = prompt("Ruta de imagen (ej: images/rosa.jpg):");
-
-    let nuevoColor = {
-        nombre,
-        imagen,
-        stock: {XS:0,S:0,M:0,L:0,XL:0}
-    };
-
-    let p=productos.find(x=>x.id===id);
-    p.colores.push(nuevoColor);
-    guardar();
-    renderAdmin();
-}
-
-function renderColores(p){
-    let html="";
-    p.colores.forEach(c=>{
-        html+=`
-        <div>
-        <strong>${c.nombre}</strong><br>
-        <div class="stock-grid">
-        ${Object.keys(c.stock).map(t=>`
-        <div>
-        ${t}
-        <input type="number" value="${c.stock[t]}"
-        onchange="editarStock(${p.id},'${c.nombre}','${t}',this.value)">
-        </div>`).join("")}
-        </div>
-        </div>
-        `;
-    });
-    return html;
-}
-
-function editarStock(id,color,talle,valor){
-    let p=productos.find(x=>x.id===id);
-    let c=p.colores.find(x=>x.nombre===color);
-    c.stock[talle]=Number(valor);
-    guardar();
-}
-
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
+
+
