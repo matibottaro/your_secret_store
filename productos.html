@@ -2,82 +2,56 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Productos</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Productos - Your Secret</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
+<header class="navbar">
+<div class="logo">YOUR SECRET</div>
 <nav>
-    <ul class="menu">
-        <li><a href="index.html">INICIO</a></li>
-
-        <li class="dropdown">
-            <a href="productos.html?categoria=ropa">ROPA INTERIOR</a>
-            <ul class="submenu">
-                <li><a href="productos.html?categoria=lenceria">Lencería</a></li>
-                <li><a href="productos.html?categoria=sostenes">Sostenes</a></li>
-                <li><a href="productos.html?categoria=bragas">Bragas</a></li>
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <a href="productos.html?categoria=beauty">BEAUTY</a>
-            <ul class="submenu">
-                <li><a href="productos.html?categoria=maquillaje">Maquillaje</a></li>
-                <li><a href="productos.html?categoria=makeup">MakeUp Kits</a></li>
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <a href="productos.html?categoria=accesorios">ACCESORIOS</a>
-            <ul class="submenu">
-                <li><a href="productos.html?categoria=caravanas">Caravanas</a></li>
-                <li><a href="productos.html?categoria=pulseras">Pulseras</a></li>
-                <li><a href="productos.html?categoria=collares">Collares</a></li>
-                <li><a href="productos.html?categoria=anillos">Anillos</a></li>
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <a href="#">CONTACTO</a>
-            <ul class="submenu">
-                <li><a href="#">WhatsApp: 099 000 000</a></li>
-                <li><a href="#">Instagram: @yoursecret</a></li>
-            </ul>
-        </li>
-    </ul>
+<ul class="menu">
+<li><a href="index.html">INICIO</a></li>
+</ul>
 </nav>
+</header>
 
-<section class="productos" id="contenedor"></section>
+<h2 class="titulo-seccion">Nuestros Productos</h2>
+
+<div id="productos" class="grid"></div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const categoria = params.get("categoria");
+let productos = JSON.parse(localStorage.getItem("productos")) || [];
+let cont = document.getElementById("productos");
 
-const productos = [
-    {nombre:"Conjunto Encaje", categoria:"lenceria", stock:true},
-    {nombre:"Sostén Push Up", categoria:"sostenes", stock:false},
-    {nombre:"Braga Satin", categoria:"bragas", stock:true},
-    {nombre:"Labial Matte", categoria:"maquillaje", stock:true},
-    {nombre:"Kit Glam", categoria:"makeup", stock:false},
-    {nombre:"Caravanas Gold", categoria:"caravanas", stock:true},
-    {nombre:"Pulsera Silver", categoria:"pulseras", stock:true},
-    {nombre:"Collar Perla", categoria:"collares", stock:false},
-    {nombre:"Anillo Rose", categoria:"anillos", stock:true},
-];
+let params = new URLSearchParams(window.location.search);
+let categoria = params.get("cat");
 
-const contenedor = document.getElementById("contenedor");
+let filtrados = categoria ? productos.filter(p=>p.categoria===categoria) : productos;
 
-productos.forEach(p => {
-    if(!categoria || p.categoria === categoria){
-        contenedor.innerHTML += `
-            <div class="card ${!p.stock ? "agotado" : ""}">
-                <div class="img">Sin Imagen</div>
-                <h3>${p.nombre}</h3>
-                ${!p.stock ? "<p class='sin-stock'>Sin Stock</p>" : ""}
-            </div>
-        `;
-    }
+filtrados.forEach(p=>{
+if(!p.activo) return;
+
+let card = document.createElement("div");
+card.className="card";
+
+let img = document.createElement("div");
+img.className="card-img";
+img.innerText="Sin Imagen";
+
+let nombre = document.createElement("h3");
+nombre.innerText=p.nombre;
+
+let precio = document.createElement("p");
+precio.innerText="$"+p.precio;
+
+card.appendChild(img);
+card.appendChild(nombre);
+card.appendChild(precio);
+
+cont.appendChild(card);
 });
 </script>
 
