@@ -2,276 +2,61 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your Secret</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
-
-<style>
-
-body{
-margin:0;
-font-family:'Poppins',sans-serif;
-background:#fff;
-color:#444;
-scroll-behavior:smooth;
-}
-
-/* NAV */
-nav{
-position:fixed;
-top:0;
-width:100%;
-background:white;
-display:flex;
-justify-content:center;
-gap:50px;
-padding:20px;
-box-shadow:0 2px 10px rgba(0,0,0,0.05);
-z-index:1000;
-}
-
-nav ul{
-list-style:none;
-margin:0;
-padding:0;
-display:flex;
-gap:50px;
-}
-
-nav li{
-position:relative;
-}
-
-nav a{
-text-decoration:none;
-color:#444;
-font-weight:500;
-cursor:pointer;
-}
-
-nav a:hover{
-color:#c2185b;
-}
-
-/* DROPDOWN */
-.dropdown{
-position:absolute;
-top:35px;
-left:0;
-background:white;
-padding:10px 0;
-display:none;
-flex-direction:column;
-min-width:180px;
-box-shadow:0 10px 20px rgba(0,0,0,0.1);
-border-radius:10px;
-}
-
-.dropdown a{
-padding:8px 15px;
-display:block;
-}
-
-nav li:hover .dropdown{
-display:flex;
-}
-
-/* HERO */
-.hero{
-height:100vh;
-background:url("hero.jpg") center/cover no-repeat;
-display:flex;
-align-items:center;
-justify-content:center;
-text-align:center;
-position:relative;
-color:white;
-}
-
-.hero::after{
-content:"";
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.3);
-}
-
-.hero-content{
-position:relative;
-z-index:2;
-}
-
-.hero h1{
-font-family:'Playfair Display',serif;
-font-size:50px;
-margin-bottom:20px;
-}
-
-.hero button{
-padding:15px 40px;
-border:none;
-background:#f5e1c8;
-color:#333;
-font-weight:600;
-cursor:pointer;
-border-radius:5px;
-}
-
-/* PRODUCTOS */
-.productos-grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:25px;
-padding:120px 40px 40px;
-max-width:1400px;
-margin:auto;
-}
-
-.producto{
-background:white;
-border-radius:20px;
-overflow:hidden;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
-transition:0.4s;
-}
-
-.producto:hover{
-transform:translateY(-8px) scale(1.03);
-}
-
-.producto img{
-width:100%;
-height:220px;
-object-fit:cover;
-}
-
-.sin-imagen{
-height:220px;
-background:linear-gradient(45deg,#f8bbd0,#f3e5f5);
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-}
-
-.producto-info{
-padding:15px;
-text-align:center;
-}
-
-.precio{
-color:#e91e63;
-font-weight:600;
-}
-
-/* FOOTER */
-footer{
-padding:30px;
-text-align:center;
-background:#c2185b;
-color:white;
-}
-
-footer a{
-color:white;
-text-decoration:none;
-margin:0 15px;
-}
-
-@media(max-width:1000px){
-.productos-grid{
-grid-template-columns:repeat(2,1fr);
-}
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<header>
+    <img src="logo.png" alt="Logo">
+</header>
+
 <nav>
-<ul>
-<li><a onclick="filtrar('Todos')">INICIO</a></li>
+    <ul class="menu">
+        <li><a href="index.html">INICIO</a></li>
 
-<li>
-<a>LENCERÍA ▾</a>
-<div class="dropdown">
-<a onclick="filtrar('Ropa Interior')">Ropa Interior</a>
-<a onclick="filtrar('Pijamas')">Pijamas</a>
-</div>
-</li>
+        <li class="dropdown">
+            <a href="productos.html?categoria=ropa">ROPA INTERIOR</a>
+            <ul class="submenu">
+                <li><a href="productos.html?categoria=lenceria">Lencería</a></li>
+                <li><a href="productos.html?categoria=sostenes">Sostenes</a></li>
+                <li><a href="productos.html?categoria=bragas">Bragas</a></li>
+            </ul>
+        </li>
 
-<li>
-<a>BEAUTY ▾</a>
-<div class="dropdown">
-<a onclick="filtrar('Maquillaje')">Maquillaje</a>
-<a onclick="filtrar('MakeUp Kit')">MakeUp Kit</a>
-<a onclick="filtrar('Perfumes')">Perfumes</a>
-</div>
-</li>
+        <li class="dropdown">
+            <a href="productos.html?categoria=beauty">BEAUTY</a>
+            <ul class="submenu">
+                <li><a href="productos.html?categoria=maquillaje">Maquillaje</a></li>
+                <li><a href="productos.html?categoria=makeup">MakeUp Kits</a></li>
+            </ul>
+        </li>
 
-<li>
-<a onclick="filtrar('Accesorios')">ACCESORIOS</a>
-</li>
+        <li class="dropdown">
+            <a href="productos.html?categoria=accesorios">ACCESORIOS</a>
+            <ul class="submenu">
+                <li><a href="productos.html?categoria=caravanas">Caravanas</a></li>
+                <li><a href="productos.html?categoria=pulseras">Pulseras</a></li>
+                <li><a href="productos.html?categoria=collares">Collares</a></li>
+                <li><a href="productos.html?categoria=anillos">Anillos</a></li>
+            </ul>
+        </li>
 
-<li><a href="#footer">CONTACTO</a></li>
-
-</ul>
+        <li class="dropdown">
+            <a href="#">CONTACTO</a>
+            <ul class="submenu">
+                <li><a href="#">WhatsApp: 099 000 000</a></li>
+                <li><a href="#">Instagram: @yoursecret</a></li>
+            </ul>
+        </li>
+    </ul>
 </nav>
 
 <section class="hero">
-<div class="hero-content">
-<h1>La elegancia que nace desde adentro.</h1>
-<button onclick="explorar()">EXPLORAR AHORA</button>
-</div>
+    <h1>YOUR SECRET</h1>
+    <p>Sutil Elegancia</p>
+    <a href="productos.html" class="btn">EXPLORAR AHORA</a>
 </section>
-
-<div id="productos" class="productos-grid"></div>
-
-<footer id="footer">
-<a href="https://instagram.com/YOUR_SECRET.UY" target="_blank">📸 Instagram</a>
-<a href="https://wa.me/59891699794" target="_blank">💬 WhatsApp</a>
-📍 Canelones, Parque del Plata
-</footer>
-
-<script>
-
-let productos = JSON.parse(localStorage.getItem("productos")) || [];
-
-function explorar(){
-document.getElementById("productos").scrollIntoView({behavior:"smooth"});
-}
-
-function filtrar(categoria){
-let cont=document.getElementById("productos");
-cont.innerHTML="";
-
-productos.filter(p=>p.activo).forEach(p=>{
-
-if(categoria!="Todos" && p.categoria!=categoria) return;
-
-let imagenHTML = (p.colores[0] && p.colores[0].imagen)
-? `<img src="${p.colores[0].imagen}">`
-: `<div class="sin-imagen">Sin Imagen</div>`;
-
-cont.innerHTML+=`
-<div class="producto">
-${imagenHTML}
-<div class="producto-info">
-<h4>${p.nombre}</h4>
-<div class="precio">$${p.precio}</div>
-</div>
-</div>
-`;
-});
-}
-
-filtrar("Todos");
-
-</script>
 
 </body>
 </html>
-
