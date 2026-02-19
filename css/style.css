@@ -1,0 +1,30 @@
+.banner {
+    background: linear-gradient(to right,#f8e6e0,#fdf6f2);
+    text-align:center;
+    padding:60px 20px;
+    animation: fadeIn 1.5s ease;
+}
+
+.banner h1 {
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.titulo-seccion {
+    text-align:center;
+    margin-top:40px;
+}
+
+.producto {
+    animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(10px);}
+    to {opacity:1; transform:translateY(0);}
+}
