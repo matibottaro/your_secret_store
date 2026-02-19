@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Productos</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+    <ul class="menu">
+        <li><a href="index.html">INICIO</a></li>
+
+        <li class="dropdown">
+            <a href="productos.html?categoria=ropa">ROPA INTERIOR</a>
+            <ul class="submenu">
+                <li><a href="productos.html?categoria=lenceria">Lencería</a></li>
+                <li><a href="productos.html?categoria=sostenes">Sostenes</a></li>
+                <li><a href="productos.html?categoria=bragas">Bragas</a></li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <a href="productos.html?categoria=beauty">BEAUTY</a>
+            <ul class="submenu">
+                <li><a href="productos.html?categoria=maquillaje">Maquillaje</a></li>
+                <li><a href="productos.html?categoria=makeup">MakeUp Kits</a></li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <a href="productos.html?categoria=accesorios">ACCESORIOS</a>
+            <ul class="submenu">
+                <li><a href="productos.html?categoria=caravanas">Caravanas</a></li>
+                <li><a href="productos.html?categoria=pulseras">Pulseras</a></li>
+                <li><a href="productos.html?categoria=collares">Collares</a></li>
+                <li><a href="productos.html?categoria=anillos">Anillos</a></li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <a href="#">CONTACTO</a>
+            <ul class="submenu">
+                <li><a href="#">WhatsApp: 099 000 000</a></li>
+                <li><a href="#">Instagram: @yoursecret</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<section class="productos" id="contenedor"></section>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const categoria = params.get("categoria");
+
+const productos = [
+    {nombre:"Conjunto Encaje", categoria:"lenceria", stock:true},
+    {nombre:"Sostén Push Up", categoria:"sostenes", stock:false},
+    {nombre:"Braga Satin", categoria:"bragas", stock:true},
+    {nombre:"Labial Matte", categoria:"maquillaje", stock:true},
+    {nombre:"Kit Glam", categoria:"makeup", stock:false},
+    {nombre:"Caravanas Gold", categoria:"caravanas", stock:true},
+    {nombre:"Pulsera Silver", categoria:"pulseras", stock:true},
+    {nombre:"Collar Perla", categoria:"collares", stock:false},
+    {nombre:"Anillo Rose", categoria:"anillos", stock:true},
+];
+
+const contenedor = document.getElementById("contenedor");
+
+productos.forEach(p => {
+    if(!categoria || p.categoria === categoria){
+        contenedor.innerHTML += `
+            <div class="card ${!p.stock ? "agotado" : ""}">
+                <div class="img">Sin Imagen</div>
+                <h3>${p.nombre}</h3>
+                ${!p.stock ? "<p class='sin-stock'>Sin Stock</p>" : ""}
+            </div>
+        `;
+    }
+});
+</script>
+
+</body>
+</html>
