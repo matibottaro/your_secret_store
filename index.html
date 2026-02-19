@@ -4,24 +4,199 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your Secret</title>
-<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#ffe6f0,#f3e5f5,#e1f5fe);
+}
+
+/* LOGO */
+header{
+text-align:center;
+padding:30px;
+}
+
+header img{
+width:250px;
+}
+
+/* GRID PRODUCTOS */
+.productos-grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:25px;
+padding:40px;
+max-width:1400px;
+margin:auto;
+}
+
+/* CARD */
+.producto{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+transition:0.4s;
+display:flex;
+flex-direction:column;
+}
+
+.producto:hover{
+transform:translateY(-8px) scale(1.03);
+box-shadow:0 12px 30px rgba(255,105,180,0.4);
+}
+
+.producto img{
+width:100%;
+height:220px;
+object-fit:cover;
+}
+
+.sin-imagen{
+height:220px;
+background:linear-gradient(45deg,#f8bbd0,#f3e5f5);
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-weight:600;
+}
+
+.producto-info{
+padding:15px;
+text-align:center;
+}
+
+.precio{
+color:#e91e63;
+font-weight:600;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:25px;
+background:linear-gradient(45deg,#ff69b4,#ff85c1);
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:disabled{
+background:gray;
+cursor:not-allowed;
+}
+
+/* CARRITO */
+#carrito{
+position:fixed;
+right:20px;
+bottom:20px;
+background:#e91e63;
+color:white;
+padding:15px;
+border-radius:50px;
+cursor:pointer;
+}
+
+/* FOOTER */
+footer{
+margin-top:50px;
+padding:30px;
+text-align:center;
+background:#c2185b;
+color:white;
+}
+
+footer a{
+color:white;
+text-decoration:none;
+margin:0 20px;
+font-weight:600;
+}
+
+</style>
 </head>
 <body>
 
 <header>
-    <h1>Your Secret</h1>
-    <a href="admin.html" class="admin-link">Admin</a>
+<img src="logo.png">
 </header>
 
-<h2>Productos</h2>
-<div id="productos"></div>
+<div id="productos" class="productos-grid"></div>
 
-<h2>Carrito</h2>
-<div id="carrito"></div>
-<h3>Total: $<span id="total">0</span></h3>
-<button onclick="finalizarCompra()">Finalizar Compra</button>
+<div id="carrito" onclick="verCarrito()">🛒 Carrito (<span id="contador">0</span>)</div>
 
-<script src="script.js"></script>
+<footer>
+<a href="https://instagram.com/YOUR_SECRET.UY" target="_blank">📸 Instagram</a>
+<a href="https://wa.me/59891699794" target="_blank">💬 WhatsApp</a>
+📍 Canelones, Parque del Plata
+</footer>
+
+<script>
+
+let productos = JSON.parse(localStorage.getItem("productos")) || [];
+let carrito = [];
+
+function renderProductos(){
+let cont = document.getElementById("productos");
+cont.innerHTML="";
+
+productos.filter(p=>p.activo).forEach(p=>{
+
+let stockTotal=0;
+p.colores.forEach(c=>{
+Object.values(c.stock).forEach(s=>stockTotal+=s);
+});
+
+let imagenHTML = (p.colores[0] && p.colores[0].imagen)
+? `<img src="${p.colores[0].imagen}">`
+: `<div class="sin-imagen">Sin Imagen</div>`;
+
+cont.innerHTML+=`
+<div class="producto">
+${imagenHTML}
+<div class="producto-info">
+<h4>${stockTotal==0?"(AGOTADO) ":""}${p.nombre}</h4>
+<div class="precio">$${p.precio}</div>
+<button ${stockTotal==0?"disabled":""} onclick="agregarCarrito(${p.id})">Agregar</button>
+</div>
+</div>
+`;
+});
+}
+
+function agregarCarrito(id){
+let p = productos.find(x=>x.id===id);
+carrito.push(p);
+document.getElementById("contador").innerText=carrito.length;
+}
+
+function verCarrito(){
+if(carrito.length==0){
+alert("Carrito vacío");
+return;
+}
+
+let total=0;
+let texto="";
+
+carrito.forEach(p=>{
+total+=p.precio;
+texto+=p.nombre+" - $"+p.precio+"\n";
+});
+
+alert(texto+"\n\nTotal: $"+total);
+}
+
+renderProductos();
+
+</script>
+
 </body>
 </html>
-
