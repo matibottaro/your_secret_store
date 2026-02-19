@@ -5,53 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your Secret</title>
 <link rel="stylesheet" href="style.css">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
 
 <header>
-    <img src="images/logo.png" class="logo">
+    <h1>Your Secret</h1>
+    <a href="admin.html" class="admin-link">Admin</a>
 </header>
 
-<section class="banner">
-    <h1>Elegancia que se siente</h1>
-    <p>Descubrí tu lado más sofisticado</p>
-</section>
+<h2>Productos</h2>
+<div id="productos"></div>
 
-<nav>
-    <button onclick="filtrar('Todos')">Todos</button>
-    <button onclick="filtrar('Ropa Interior')">Ropa Interior</button>
-    <button onclick="filtrar('Pijamas')">Pijamas</button>
-    <button onclick="filtrar('Accesorios')">Accesorios</button>
-    <button onclick="filtrar('Perfumes')">Perfumes</button>
-    <button onclick="filtrar('Maquillaje')">Maquillaje</button>
-</nav>
-
-<h2 class="titulo-seccion">Productos Destacados</h2>
-<section id="destacados"></section>
-
-<h2 class="titulo-seccion">Catálogo</h2>
-<section id="productos"></section>
-
-<section id="carrito">
-    <h2>🛒 Carrito</h2>
-    <input id="cupon" placeholder="Código de descuento">
-    <button onclick="aplicarCupon()">Aplicar</button>
-    <div id="carrito-items"></div>
-    <h3>Total: $<span id="total">0</span></h3>
-    <button onclick="finalizarCompra()">Finalizar Compra</button>
-</section>
-
-<footer>
-    <a href="https://instagram.com/your_secret.uy" target="_blank">
-        <i class="fab fa-instagram"></i> YOUR_SECRET.UY
-    </a>
-    <a href="https://wa.me/59891699794" target="_blank">
-        <i class="fab fa-whatsapp"></i> 091699794
-    </a>
-    <p><i class="fas fa-map-marker-alt"></i> Canelones, Parque del Plata</p>
-</footer>
+<h2>Carrito</h2>
+<div id="carrito"></div>
+<h3>Total: $<span id="total">0</span></h3>
+<button onclick="finalizarCompra()">Finalizar Compra</button>
 
 <script src="script.js"></script>
 </body>
 </html>
+
